@@ -1,10 +1,8 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import {ProductService} from "@/services/ProductService";
-import type {Product} from "@/models/Product";
 import ProductList from "@/components/ProductList";
 
-export default async function Home() {
-    const products: Product[] = await ProductService.getProducts();
+export default async function Portfolio() {
+    let products = await ProductService.getProducts();
 
     return (
         <main className="my-5 container">

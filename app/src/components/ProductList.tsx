@@ -1,22 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/models/Product";
+import type {Product} from "@/models/Product";
 
 type Props = {
     products: Product[];
 };
 
-export default function ProductList({ products }: Props) {
+export default function ProductList({products}: Props) {
     return (
         <div className="d-flex flex-column gap-3">
             {products.map((p) => (
                 <div key={p.id} className="card shadow-sm border-0 rounded-3 p-3">
                     <div className="row g-3 align-items-center">
-                        {/* Image */}
                         <div className="col-md-3 text-center">
-                            <div className="bg-light rounded-3 overflow-hidden" style={{ height: "160px" }}>
+                            <div className="bg-light rounded-3 overflow-hidden" style={{height: "160px"}}>
                                 <Image
-                                    src="/placeholder.jpg"
+                                    src="https://placehold.co/240x160"
                                     alt={p.name}
                                     width={240}
                                     height={160}
@@ -29,7 +28,9 @@ export default function ProductList({ products }: Props) {
                         {/* Content */}
                         <div className="col-md-6">
                             <h5 className="fw-semibold mb-1">{p.name}</h5>
-                            <div className="text-muted small mb-2">⭐ {p.rating ? Number(p.rating).toFixed(1) : "N/A"} / 5</div>
+                            <div className="text-muted small mb-2">⭐ {p.rating ? Number(p.rating).toFixed(1) : "N/A"} /
+                                5
+                            </div>
                         </div>
 
                         {/* Price + CTA */}

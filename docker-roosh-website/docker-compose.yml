@@ -3,6 +3,8 @@ services:
     image: node:20-alpine
     working_dir: /app
     command: sh -c "npm ci && npm run dev -- -H 0.0.0.0 -p 3000"
+    networks:
+      - roosh-shared-network
     ports:
       - "3000:3000"
     environment:
@@ -20,3 +22,7 @@ services:
       timeout: 3s
       retries: 30
       start_period: 60s
+
+networks:
+  roosh-shared-network:
+    external: true

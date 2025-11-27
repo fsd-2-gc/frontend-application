@@ -23,7 +23,7 @@ export class ProductRepository {
         const json = await response.json();
 
         const items: Product[] = Object.values(json.data).map((v: any) => ({
-            id: Number(v.id),
+            id: Number(v.product_id),
             name: String(v.name),
             price_per_day: Number(v.price_per_day),
             rating: Number(v.rating),
