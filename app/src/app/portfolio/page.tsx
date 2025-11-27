@@ -1,8 +1,19 @@
 import {ProductService} from "@/services/ProductService";
 import ProductList from "@/components/ProductList";
 
-export default async function Portfolio() {
-    let products = await ProductService.getProducts();
+type PageProps = {
+    searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+export default async function Portfolio({searchParams}: PageProps) {
+    const rawPage = Array.isArray(searchParams?.page)
+        ? searchParams?.page[0]
+        : searchParams?.page;
+
+    const pageNum = rawPage ? parseInt(String(rawPage), 10) : 1;
+    const safePage = Number.isFinite(pageNum) && pageNum > 0 ? pageNum : 1;
+
+    const products = await ProductService.getProducts(safePage);
 
     return (
         <main className="my-5 container">
