@@ -13,7 +13,7 @@ export class ProductRepository {
      * Paginated response for products coming from the API.
      * The API returns a maximum of 25 items per page and includes a total count.
      */
-    static async getProductsPage(page: number = 1) {
+    static async getProducts(page: number = 1) {
         const url = `${this.BASE_URL}/getproducts/?page=${encodeURIComponent(page)}`;
 
         const response = await fetch(url, {
