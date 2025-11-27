@@ -28,7 +28,7 @@ export default function Pagination({currentPage, maxPage}: Props) {
     };
 
     // Show at most 5 numeric buttons centered around the current page when possible.
-    const WINDOW = 10;
+    const WINDOW = 5;
     let start = Math.max(1, currentPage - Math.floor(WINDOW / 2));
     let end = start + WINDOW - 1;
     if (end > maxPage) {
