@@ -27,11 +27,26 @@ export default function Pagination({currentPage, maxPage}: Props) {
         return `${pathname}?${params.toString()}`;
     };
 
-    const pages = Array.from({length: maxPage}, (_, i) => i + 1);
+    // Show at most 5 numeric buttons centered around the current page when possible.
+    const WINDOW = 10;
+    let start = Math.max(1, currentPage - Math.floor(WINDOW / 2));
+    let end = start + WINDOW - 1;
+    if (end > maxPage) {
+        end = maxPage;
+        start = Math.max(1, end - WINDOW + 1);
+    }
+    const pages = Array.from({length: end - start + 1}, (_, i) => start + i);
 
     return (
         <nav aria-label="Pagination">
             <ul className="pagination mb-0">
+                {/* First button */}
+                <li className={`page-item${currentPage === 1 ? " disabled" : ""}`}
+                    aria-disabled={currentPage === 1 || undefined}>
+                    <Link className="page-link" href={makeHref(1)} aria-label="First">
+                        First
+                    </Link>
+                </li>
                 {pages.map((page) => (
                     <li
                         key={page}
@@ -43,6 +58,13 @@ export default function Pagination({currentPage, maxPage}: Props) {
                         </Link>
                     </li>
                 ))}
+                {/* Last button */}
+                <li className={`page-item${currentPage === maxPage ? " disabled" : ""}`}
+                    aria-disabled={currentPage === maxPage || undefined}>
+                    <Link className="page-link" href={makeHref(maxPage)} aria-label="Last">
+                        Last
+                    </Link>
+                </li>
             </ul>
         </nav>
     );
