@@ -9,8 +9,19 @@ export class ProductRepository {
         return process.env.API_KEY as string;
     }
 
-    static async getProducts(page: number = 1) {
-        const url = `${this.BASE_URL}/getproducts/?page=${encodeURIComponent(page)}`;
+    static async getProducts(page: number = 1, minRating: number = 0) {
+        const clamped = Number.isFinite(minRating as number)
+            ? Math.min(5, Math.max(0, Number(minRating)))
+            : undefined;
+
+        const params = new URLSearchParams({
+            page: String(page),
+        });
+        if (clamped !== undefined) {
+            params.set("min_rating", String(clamped));
+        }
+
+        const url = `${this.BASE_URL}/getproducts/?${params.toString()}`;
 
         const response = await fetch(url, {
             method: "GET",

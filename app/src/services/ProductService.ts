@@ -1,8 +1,8 @@
 import {ProductRepository} from "@/repositories/ProductRepository";
 
 export class ProductService {
-    static async getProducts(page: number = 1) {
-        const data = await ProductRepository.getProducts(page);
+    static async getProducts(page: number = 1, minRating: number = 0) {
+        const data = await ProductRepository.getProducts(page, minRating);
         let totalPages = 1;
 
         if (data.total > 25) {

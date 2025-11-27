@@ -14,24 +14,25 @@ export default async function Portfolio({searchParams}: PageProps) {
     const pageNum = rawPage ? parseInt(String(rawPage), 10) : 1;
     const safePage = Number.isFinite(pageNum) && pageNum > 0 ? pageNum : 1;
 
-    const products = await ProductService.getProducts(safePage);
+    const rawMin = Array.isArray(searchParams?.min_rating)
+        ? searchParams?.min_rating[0]
+        : (searchParams as any)?.min_rating;
+
+    const minVal = rawMin !== undefined ? parseFloat(String(rawMin)) : 0;
+    const safeMin = Number.isFinite(minVal) ? Math.min(5, Math.max(0, minVal)) : 0;
+
+    const products = await ProductService.getProducts(safePage, safeMin);
 
     return (
         <main className="my-5 container">
             <h1 className="fw-bold mb-4 text-center">Available Parking Services</h1>
 
-            {products.items.length === 0 ? (
-                <div className="text-center text-muted fs-5 my-5">
-                    No parking products found.
+            <div>
+                <ProductList products={products.items}/>
+                <div className={"mt-2"}>
+                    <Pagination currentPage={safePage} maxPage={products.total_pages}/>
                 </div>
-            ) : (
-                <div>
-                    <ProductList products={products.items}/>
-                    <div className={"mt-2"}>
-                        <Pagination currentPage={safePage} maxPage={products.total_pages}/>
-                    </div>
-                </div>
-            )}
+            </div>
         </main>
     );
 }
