@@ -45,4 +45,35 @@ export class ProductRepository {
             "items": items,
         };
     }
+
+    static async getProduct(id: number) {
+        if (
+            !Number.isFinite(id as number)
+            || id <= 0
+        ) {
+            return null;
+        }
+
+        const url = `${this.BASE_URL}/getproduct/${id}/`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+        });
+
+        const json = await response.json();
+        let productData = json.data;
+
+        const product: Product = {
+            id: Number(productData.product_id),
+            name: String(productData.name ?? ""),
+            price_per_day: Number(productData.price_per_day ?? 0),
+            rating: Number(productData.rating ?? 0),
+        };
+
+        return product;
+    }
 }

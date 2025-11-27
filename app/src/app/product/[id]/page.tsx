@@ -1,45 +1,17 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
+import {ProductService} from "@/services/ProductService";
+import type {Product} from "@/models/Product";
 
-export default function ProductDetails() {
-    const params = useParams();
-    const productId = params.id;
+type PageProps = {
+    params: { id: string };
+};
 
-    const [product, setProduct] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+export default async function ProductDetails({params}: PageProps) {
+    const product: Product | null = await ProductService.getProduct(Number(params.id));
 
-    useEffect(() => {
-        fetch(`http://localhost:8000/v1/getproduct/${productId}/`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-Key": "dev-secret-key"
-            }
-        })
-            .then(async (res) => {
-                if (!res.ok) {
-                    const text = await res.text();
-                    console.error("API Error:", res.status, text);
-                    setLoading(false);
-                    return;
-                }
-                return res.json();
-            })
-            .then((data) => {
-                if (data?.data) setProduct(data.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error("Fetch error:", err);
-                setLoading(false);
-            });
-    }, [productId]);
-
-    if (loading) return <div className="text-center m-5">Loading...</div>;
-    if (!product) return <div className="text-center m-5">Product not found</div>;
+    if (!product) {
+        return <div className="text-center m-5">Product not found</div>;
+    }
 
     return (
         <main className="container my-5">
@@ -65,9 +37,9 @@ export default function ProductDetails() {
                     </div>
 
                     {/* Main Image */}
-                    <div className="rounded overflow-hidden shadow-sm mb-3" style={{ height: "380px" }}>
+                    <div className="rounded overflow-hidden shadow-sm mb-3" style={{height: "380px"}}>
                         <Image
-                            src="/placeholder.jpg"
+                            src="https://placehold.co/900x400"
                             width={900}
                             height={400}
                             alt={product.name}
@@ -82,7 +54,7 @@ export default function ProductDetails() {
                             <div
                                 key={img}
                                 className="rounded bg-light"
-                                style={{ width: "100px", height: "70px" }}
+                                style={{width: "100px", height: "70px"}}
                             />
                         ))}
                     </div>
@@ -121,7 +93,7 @@ export default function ProductDetails() {
                                 <span>Service fee</span>
                                 <span>--</span>
                             </div>
-                            <hr />
+                            <hr/>
                             <div className="d-flex justify-content-between fw-bold">
                                 <span>Total</span>
                                 <span>--</span>
@@ -131,7 +103,7 @@ export default function ProductDetails() {
                         {/* Brand orange confirm button */}
                         <button
                             className="btn fw-semibold py-2 w-100"
-                            style={{ backgroundColor: "#fd6a01", color: "#fff" }}
+                            style={{backgroundColor: "#fd6a01", color: "#fff"}}
                         >
                             Confirm booking
                         </button>

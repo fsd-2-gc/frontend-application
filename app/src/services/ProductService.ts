@@ -14,4 +14,8 @@ export class ProductService {
             "items": data.items,
         }
     }
+
+    static async getProduct(id: number) {
+        return ProductRepository.getProduct(id);
+    }
 }
