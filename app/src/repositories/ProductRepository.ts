@@ -9,8 +9,12 @@ export class ProductRepository {
         return process.env.API_KEY as string;
     }
 
-    static async getProducts() {
-        const url = `${this.BASE_URL}/getproducts/`;
+    /**
+     * Paginated response for products coming from the API.
+     * The API returns a maximum of 25 items per page and includes a total count.
+     */
+    static async getProductsPage(page: number = 1) {
+        const url = `${this.BASE_URL}/getproducts/?page=${encodeURIComponent(page)}`;
 
         const response = await fetch(url, {
             method: "GET",
