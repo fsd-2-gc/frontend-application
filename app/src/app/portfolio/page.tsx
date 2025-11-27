@@ -1,5 +1,6 @@
 import {ProductService} from "@/services/ProductService";
 import ProductList from "@/components/ProductList";
+import Pagination from "@/components/Pagination";
 
 type PageProps = {
     searchParams?: { [key: string]: string | string[] | undefined };
@@ -24,7 +25,12 @@ export default async function Portfolio({searchParams}: PageProps) {
                     No parking products found.
                 </div>
             ) : (
-                <ProductList products={products}/>
+                <div>
+                    <ProductList products={products}/>
+                    <div className={"mt-2"}>
+                        <Pagination currentPage={safePage} maxPage={10}/>
+                    </div>
+                </div>
             )}
         </main>
     );
