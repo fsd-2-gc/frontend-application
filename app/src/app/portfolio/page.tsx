@@ -20,15 +20,15 @@ export default async function Portfolio({searchParams}: PageProps) {
         <main className="my-5 container">
             <h1 className="fw-bold mb-4 text-center">Available Parking Services</h1>
 
-            {products.length === 0 ? (
+            {products.items.length === 0 ? (
                 <div className="text-center text-muted fs-5 my-5">
                     No parking products found.
                 </div>
             ) : (
                 <div>
-                    <ProductList products={products}/>
+                    <ProductList products={products.items}/>
                     <div className={"mt-2"}>
-                        <Pagination currentPage={safePage} maxPage={10}/>
+                        <Pagination currentPage={safePage} maxPage={products.total_pages}/>
                     </div>
                 </div>
             )}
