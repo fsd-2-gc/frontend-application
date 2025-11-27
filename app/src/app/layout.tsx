@@ -7,19 +7,14 @@ export const metadata: Metadata = {
   description: "Roosh website",
 };
 
-export default function RootLayout({
-   children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-        <body>
-        <div className="container-md">
-            {children}
-        </div>
+        <body className="w-100">
+        {children}
         <BootstrapScriptLoader />
         </body>
         </html>
     );
 }
+
