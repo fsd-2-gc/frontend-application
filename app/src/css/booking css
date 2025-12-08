@@ -1,0 +1,56 @@
+/* BookingByIdPage.css */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.alert {
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.alert.info {
+  background-color: #d9ecff;
+  color: #084b8a;
+}
+
+.alert.danger {
+  background-color: #ffd8d8;
+  color: #a30000;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+
+.title {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.col p {
+  margin: 6px 0;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
