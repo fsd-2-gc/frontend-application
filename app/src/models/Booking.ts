@@ -11,7 +11,7 @@ export interface Booking {
 
 enum Status {
     Pending,
-    Confirmed,
+    Confirmed = 2,
     Cancelled,
     Refunded
 }

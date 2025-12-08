@@ -14,7 +14,7 @@ export class BookingRepository {
             return null;
         }
 
-        const url = `${this.BASE_URL}/getBooking/${id}/`;
+        /* const url = `${this.BASE_URL}/getBooking/${id}/`;
 
 
         const response = await fetch(url, {
@@ -38,8 +38,8 @@ export class BookingRepository {
             endDate: new Date(bookingData.endDate),
             totalPrice: bookingData.totalPrice,
             status: bookingData.Status,
-        }
-
+        } 
+        const booking: Booking = {
         booking.id = 1;
         booking.productId = 1;
         booking.customerEmail = "hallo@E.com"
@@ -48,7 +48,23 @@ export class BookingRepository {
         booking.endDate = new Date("2025-12-09");
         booking.totalPrice = 30.50;
         booking.status = bookingData.Status.Confirmed;
+        }
+        
 
         return booking
+        */
+
+        const booking: Booking = {
+            id: 1,
+            productId: 1,
+            customerEmail: "e",
+            resellerId: 1,
+            startDate: new Date("2025-12-08"),
+            endDate: new Date("2025-12-09"),
+            totalPrice: 1,
+            status: 2
+        }
+
+       return booking
     }
 }

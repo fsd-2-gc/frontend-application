@@ -13,13 +13,25 @@ export default function Home() {
                     <p className="mt-3 fs-4">
                         Secure & affordable parking near airports, stations and city centers
                     </p>
-                    <Link
-                        href="/portfolio"
-                        className="btn btn-lg mt-4 px-5 py-3 fw-semibold text-white"
-                        style={{ backgroundColor: "#fd6a01", borderColor: "#fd6a01" }}
-                    >
-                        Browse Parking Spots
-                    </Link>
+                    <div>
+                        <Link
+                            href="/portfolio"
+                            className="btn btn-lg mt-4 px-5 py-3 fw-semibold text-white"
+                            style={{ backgroundColor: "#fd6a01", borderColor: "#fd6a01" }}
+                        >
+                            Browse Parking Spots
+                        </Link>
+                    </div>
+
+                    <div>
+                        <Link
+                            href="/booking"
+                            className="btn btn-lg mt-4 px-5 py-3 fw-semibold text-white"
+                            style={{ backgroundColor: "#fd6a01", borderColor: "#fd6a01" }}
+                        >
+                            booking
+                        </Link>
+                    </div>
                 </div>
             </section>
 
