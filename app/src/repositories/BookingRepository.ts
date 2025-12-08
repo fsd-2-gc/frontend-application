@@ -65,6 +65,54 @@ export class BookingRepository {
             status: 2
         }
 
-       return booking
+        return booking
+    }
+
+    static async createBooking(booking: Omit<Booking, "id">){
+        const url = `${this.BASE_URL}/createbooking/`;
+
+        /*
+
+        const payload = {
+            product_id: booking.productId,
+            customer_email: booking.customerEmail,
+            reseller_id: booking.resellerId,
+            start_date: booking.startDate.toISOString(),
+            end_date: booking.endDate.toISOString(),
+            total_price: booking.totalPrice,
+            status: booking.status,
+        };
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const json = await response.json();
+
+        if (!response.ok || !json?.data) {
+            throw new Error(json?.message ?? "Failed to create booking");
+        }
+
+        const data = json.data;
+
+        const createdBooking: Booking = {
+            id: Number(data.booking_id),
+            productId: Number(data.product_id),
+            customerEmail: String(data.customer_email),
+            resellerId: Number(data.reseller_id),
+            startDate: new Date(data.start_date),
+            endDate: new Date(data.end_date),
+            totalPrice: Number(data.total_price),
+            status: data.status,
+        };
+
+        */
+
+        return 1;
     }
 }

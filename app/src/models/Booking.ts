@@ -9,7 +9,7 @@ export interface Booking {
     status: Status
 }
 
-enum Status {
+export enum Status {
     Pending,
     Confirmed = 2,
     Cancelled,
