@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 import { BookingService } from "../services/BookingService"
 import { Booking } from "../models/Booking";
