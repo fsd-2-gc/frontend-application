@@ -100,13 +100,13 @@ export default async function ProductDetails({params}: PageProps) {
                             </div>
                         </div>
 
-                        {/* Brand orange confirm button */}
-                        <button
+                        <a
                             className="btn fw-semibold py-2 w-100"
+                            href={`/createBooking?productId=${product.id}`}
                             style={{backgroundColor: "#fd6a01", color: "#fff"}}
                         >
                             Confirm booking
-                        </button>
+                        </a>
 
                         <p className="text-muted text-center small mt-3">
                             You won&apos;t be charged yet. Review booking on the next page.

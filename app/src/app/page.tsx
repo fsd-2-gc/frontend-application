@@ -22,16 +22,6 @@ export default function Home() {
                             Browse Parking Spots
                         </Link>
                     </div>
-
-                    <div>
-                        <Link
-                            href="/booking"
-                            className="btn btn-lg mt-4 px-5 py-3 fw-semibold text-white"
-                            style={{ backgroundColor: "#fd6a01", borderColor: "#fd6a01" }}
-                        >
-                            booking
-                        </Link>
-                    </div>
                 </div>
             </section>
 

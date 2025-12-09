@@ -1,32 +1,31 @@
-import type { Booking } from "../models/Booking";
+import type {Booking} from "@/models/Booking";
 
 export class BookingRepository {
-    private baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL!;
-    private apiKey = process.env.NEXT_PUBLIC_API_KEY!;
+    private static get BASE_URL() {
+        return process.env.API_BASE_URL as string;
+    }
 
-    async getBookingById(id: number): Promise<Booking | null> {
+    private static get API_KEY() {
+        return process.env.API_KEY as string;
+    }
+
+    static async getBookingById(id: number): Promise<Booking | null> {
         if (!Number.isFinite(id) || id <= 0) {
             return null;
         }
 
-        const url = `${this.baseUrl}/getbooking/${id}/`;
+        const url = `${this.BASE_URL}/getbooking/${id}/`;
 
         const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": this.apiKey,
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
             },
         });
 
-        const text = await response.text();
-
-        if (text.startsWith("<!")) {
-            console.error("SERVER RETURNED HTML:", text);
-            throw new Error("Backend returned HTML (403/404)");
-        }
-
-        const json = JSON.parse(text);
+        const json = await response.json();
 
         if (!response.ok || !json?.data) {
             console.error("Booking ophalen mislukt:", json);
@@ -36,57 +35,41 @@ export class BookingRepository {
         return this.mapBooking(json.data);
     }
 
-async createBooking(booking: Omit<Booking, "id">) {
-    const url = `${this.baseUrl}/createbooking/`;
+    static async createBooking(booking: Omit<Booking, "id">): Promise<number> {
+        const url = `${this.BASE_URL}/createbooking/`;
 
-    const payload = {
-        product_id: booking.productId,
-        customer_email: booking.customerEmail,
-        reseller_id: booking.resellerId,
-        start_date: booking.startDate.toISOString().split("T")[0],
-        end_date: booking.endDate.toISOString().split("T")[0],
-        total_price: Number(booking.totalPrice),
-        status: booking.status,
-    };
+        const payload = {
+            product_id: booking.productId,
+            customer_email: booking.customerEmail,
+            reseller_id: booking.resellerId,
+            start_date: booking.startDate.toISOString().split("T")[0],
+            end_date: booking.endDate.toISOString().split("T")[0],
+            total_price: Number(booking.totalPrice),
+            status: booking.status,
+        };
 
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": this.apiKey,
-        },
-        body: JSON.stringify(payload),
-    });
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
 
-    const text = await response.text();
-    let json: any = {};
-    try {
-        json = JSON.parse(text);
-    } catch {
-        console.error("SERVER RETURNED NON-JSON:", text);
-        throw new Error("Backend returned invalid JSON");
+        const json = await response.json();
+
+        if (!response.ok || !json?.data?.booking_id) {
+            console.error("Booking maken mislukt:", json);
+            throw new Error(String(json?.data ?? "Failed to create booking"));
+        }
+
+        // Return only the new booking ID, mirroring how ProductRepository returns parsed primitives
+        return Number(json.data.booking_id);
     }
 
-    if (!response.ok) {
-        console.error("Booking maken mislukt:", json);
-        throw new Error(json.data ?? "Failed to create booking"); // ✅ fix hier
-    }
-
-    const data = json.data;
-
-    return {
-        id: Number(data.booking_id),
-        productId: data.product_id,
-        customerEmail: data.customer_email,
-        resellerId: data.reseller_id,
-        startDate: new Date(data.start_date),
-        endDate: new Date(data.end_date),
-        totalPrice: Number(data.total_price),
-        status: data.status,
-    };
-}
-
-    private mapBooking(b: any): Booking {
+    private static mapBooking(b: any): Booking {
         return {
             id: Number(b.id ?? b.booking_id),
             productId: b.product_id,

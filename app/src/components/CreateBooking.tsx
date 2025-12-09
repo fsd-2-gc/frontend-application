@@ -1,18 +1,18 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import "../css/createBooking.css";
 
-import { BookingService } from "../services/BookingService";
-import { Booking, Status } from "../models/Booking";
-import { ProductService } from "../services/ProductService";
+import {BookingService} from "../services/BookingService";
+import {Booking, Status} from "../models/Booking";
+// Note: fetch product data via internal API to keep repositories server-only
 
 type CreateBookingProps = {
     productId: number;   // automatically injected (recommended)
     resellerId: number;  // automatically injected
 };
 
-export default function CreateBooking({ productId, resellerId }: CreateBookingProps) {
+export default function CreateBooking({productId, resellerId}: CreateBookingProps) {
     const [customerEmail, setCustomerEmail] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -23,14 +23,24 @@ export default function CreateBooking({ productId, resellerId }: CreateBookingPr
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    // Fetch product price automatically
+    // Fetch product price automatically (via internal API)
     useEffect(() => {
         async function fetchPrice() {
-            const product = await ProductService.getProduct(productId);
-            if (product) {
-                setDailyPrice(product.price_per_day);
+            try {
+                const res = await fetch(`/api/products/${productId}`, {
+                    headers: {"Content-Type": "application/json"},
+                });
+                if (!res.ok) return;
+                const json = await res.json();
+                const product = json?.data;
+                if (product && typeof product.price_per_day === "number") {
+                    setDailyPrice(product.price_per_day);
+                }
+            } catch (_err) {
+                // ignore; price will remain 0
             }
         }
+
         fetchPrice();
     }, [productId]);
 
@@ -124,17 +134,17 @@ export default function CreateBooking({ productId, resellerId }: CreateBookingPr
                     {/* Auto-filled info (read-only) */}
                     <div className="field">
                         <label>Product ID</label>
-                        <input type="number" value={productId} readOnly disabled />
+                        <input type="number" value={productId} readOnly disabled/>
                     </div>
 
                     <div className="field">
                         <label>Reseller ID</label>
-                        <input type="number" value={resellerId} readOnly disabled />
+                        <input type="number" value={resellerId} readOnly disabled/>
                     </div>
 
                     <div className="field">
                         <label>Total Price</label>
-                        <input type="number" value={totalPrice} readOnly disabled />
+                        <input type="number" value={totalPrice} readOnly disabled/>
                     </div>
 
                     <div className="buttonBar">
