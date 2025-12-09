@@ -42,7 +42,6 @@ export class BookingRepository {
             product_id: booking.productId,
             customer_email: booking.customerEmail,
             reseller_id: booking.resellerId,
-            // send full ISO datetime to backend (was date-only before)
             start_date: booking.startDate.toISOString(),
             end_date: booking.endDate.toISOString(),
             total_price: Number(booking.totalPrice),
