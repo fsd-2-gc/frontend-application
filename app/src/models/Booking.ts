@@ -10,8 +10,8 @@ export type Booking = {
 }
 
 export enum Status {
-    Pending,
-    Confirmed = 2,
-    Cancelled,
-    Refunded
+    Pending = 0,
+    Confirmed = 1,
+    Cancelled = 2,
+    Refunded = 4
 }

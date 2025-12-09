@@ -98,22 +98,22 @@ export default function CreateBooking({productId, resellerId}: CreateBookingProp
 
                 <form onSubmit={handleSubmit} className="formGrid">
 
-                    {/* Start Date */}
+                    {/* Start Date & Time */}
                     <div className="field">
-                        <label>Start Date</label>
+                        <label>Start Date & Time</label>
                         <input
-                            type="date"
+                            type="datetime-local"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                             required
                         />
                     </div>
 
-                    {/* End Date */}
+                    {/* End Date & Time */}
                     <div className="field">
-                        <label>End Date</label>
+                        <label>End Date & Time</label>
                         <input
-                            type="date"
+                            type="datetime-local"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
                             required
