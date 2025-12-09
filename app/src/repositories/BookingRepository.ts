@@ -1,118 +1,101 @@
 import type { Booking } from "../models/Booking";
 
 export class BookingRepository {
-    private static get BASE_URL() {
-        return process.env.API_BASE_URL as string;
-    }
+    private baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL!;
+    private apiKey = process.env.NEXT_PUBLIC_API_KEY!;
 
-    private static get API_KEY() {
-        return process.env.API_KEY as string;
-    }
-
-    static async getBookingById(id: number) {
-        if (!Number.isFinite(id as number) || id <= 0) {
+    async getBookingById(id: number): Promise<Booking | null> {
+        if (!Number.isFinite(id) || id <= 0) {
             return null;
         }
 
-        /* const url = `${this.BASE_URL}/getBooking/${id}/`;
-
+        const url = `${this.baseUrl}/getbooking/${id}/`;
 
         const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "X-API-KEY": this.API_KEY,
-            }
-        })
-
-        const json = await response.json();
-
-        let bookingData = json.data;
-
-        const booking: Booking = {
-            id: bookingData.id,
-            productId: bookingData.productId,
-            customerEmail: bookingData.customerEmail,
-            resellerId: bookingData.resellerId,
-            startDate: new Date(bookingData.startDate),
-            endDate: new Date(bookingData.endDate),
-            totalPrice: bookingData.totalPrice,
-            status: bookingData.Status,
-        } 
-        const booking: Booking = {
-        booking.id = 1;
-        booking.productId = 1;
-        booking.customerEmail = "hallo@E.com"
-        booking.resellerId = 1;
-        booking.startDate = new Date("2025-12-08");
-        booking.endDate = new Date("2025-12-09");
-        booking.totalPrice = 30.50;
-        booking.status = bookingData.Status.Confirmed;
-        }
-        
-
-        return booking
-        */
-
-        const booking: Booking = {
-            id: 1,
-            productId: 1,
-            customerEmail: "e",
-            resellerId: 1,
-            startDate: new Date("2025-12-08"),
-            endDate: new Date("2025-12-09"),
-            totalPrice: 1,
-            status: 2
-        }
-
-        return booking
-    }
-
-    static async createBooking(booking: Omit<Booking, "id">){
-        const url = `${this.BASE_URL}/createbooking/`;
-
-        /*
-
-        const payload = {
-            product_id: booking.productId,
-            customer_email: booking.customerEmail,
-            reseller_id: booking.resellerId,
-            start_date: booking.startDate.toISOString(),
-            end_date: booking.endDate.toISOString(),
-            total_price: booking.totalPrice,
-            status: booking.status,
-        };
-
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-KEY": this.API_KEY,
+                "X-API-KEY": this.apiKey,
             },
-            body: JSON.stringify(payload),
         });
 
-        const json = await response.json();
+        const text = await response.text();
 
-        if (!response.ok || !json?.data) {
-            throw new Error(json?.message ?? "Failed to create booking");
+        if (text.startsWith("<!")) {
+            console.error("SERVER RETURNED HTML:", text);
+            throw new Error("Backend returned HTML (403/404)");
         }
 
-        const data = json.data;
+        const json = JSON.parse(text);
 
-        const createdBooking: Booking = {
-            id: Number(data.booking_id),
-            productId: Number(data.product_id),
-            customerEmail: String(data.customer_email),
-            resellerId: Number(data.reseller_id),
-            startDate: new Date(data.start_date),
-            endDate: new Date(data.end_date),
-            totalPrice: Number(data.total_price),
-            status: data.status,
+        if (!response.ok || !json?.data) {
+            console.error("Booking ophalen mislukt:", json);
+            return null;
+        }
+
+        return this.mapBooking(json.data);
+    }
+
+async createBooking(booking: Omit<Booking, "id">) {
+    const url = `${this.baseUrl}/createbooking/`;
+
+    const payload = {
+        product_id: booking.productId,
+        customer_email: booking.customerEmail,
+        reseller_id: booking.resellerId,
+        start_date: booking.startDate.toISOString().split("T")[0],
+        end_date: booking.endDate.toISOString().split("T")[0],
+        total_price: Number(booking.totalPrice),
+        status: booking.status,
+    };
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": this.apiKey,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const text = await response.text();
+    let json: any = {};
+    try {
+        json = JSON.parse(text);
+    } catch {
+        console.error("SERVER RETURNED NON-JSON:", text);
+        throw new Error("Backend returned invalid JSON");
+    }
+
+    if (!response.ok) {
+        console.error("Booking maken mislukt:", json);
+        throw new Error(json.data ?? "Failed to create booking"); // ✅ fix hier
+    }
+
+    const data = json.data;
+
+    return {
+        id: Number(data.booking_id),
+        productId: data.product_id,
+        customerEmail: data.customer_email,
+        resellerId: data.reseller_id,
+        startDate: new Date(data.start_date),
+        endDate: new Date(data.end_date),
+        totalPrice: Number(data.total_price),
+        status: data.status,
+    };
+}
+
+    private mapBooking(b: any): Booking {
+        return {
+            id: Number(b.id ?? b.booking_id),
+            productId: b.product_id,
+            customerEmail: b.customer_email,
+            resellerId: b.reseller_id,
+            startDate: new Date(b.start_date),
+            endDate: new Date(b.end_date),
+            totalPrice: Number(b.total_price),
+            status: b.status,
         };
-
-        */
-
-        return 1;
     }
 }
