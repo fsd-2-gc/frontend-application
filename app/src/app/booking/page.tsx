@@ -1,71 +1,60 @@
-"use client";
+import { useEffect, useState } from "react";
 
-import { useState } from "react";
-import type { Booking } from "@/models/Booking";
-import { BookingService } from "@/services/BookingService";
+interface Booking {
+  id: number;
+  product: string;
+  start_date: string;
+  end_date: string;
+  total_price: number;
+}
 
-const service = new BookingService();
+export default function BookingPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function BookingListPage() {
-    const [email, setEmail] = useState("");
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [loading, setLoading] = useState(false);
+  const email = "rubenwassenberg@gmail.com"; // of uit je auth/context
 
+  useEffect(() => {
     const fetchBookings = async () => {
-        if (!email) return;
-        setLoading(true);
-        try {
-            const data = await service.getBookingsByEmail(email);
-            setBookings(data);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/getbookings/${encodeURIComponent(email)}/`,
+          {
+            headers: {
+              "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY!,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API returned status ${response.status}`);
         }
+
+        const data = await response.json();
+        setBookings(data);
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className="d-flex flex-column gap-3">
-            <div className="mb-3 d-flex gap-2 align-items-center">
-                <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Enter customer email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <button className="btn btn-dark" onClick={fetchBookings}>
-                    Search
-                </button>
-            </div>
+    fetchBookings();
+  }, [email]);
 
-            {loading && <div>Loading...</div>}
+  if (loading) return <p>Loading...</p>;
 
-            {bookings.map((b) => (
-                <div key={b.booking_id} className="card shadow-sm border-0 rounded-3 p-3">
-                    <div className="row g-3 align-items-center">
-                        <div className="col-md-6">
-                            <h5 className="fw-semibold mb-1">{b.product_id}</h5>
-                            <div className="text-muted small mb-2">{b.customer_email}</div>
-                        </div>
-
-                        <div className="col-md-3">
-                            <div>
-                                {b.start_date} → {b.end_date}
-                            </div>
-                        </div>
-
-                        <div className="col-md-3 text-end">
-                            <div className="fw-semibold">Total</div>
-                            <div className="fs-5 fw-bold">${Number(b.total_price).toFixed(2)}</div>
-                        </div>
-                    </div>
-                </div>
-            ))}
-
-            {!loading && bookings.length === 0 && email && (
-                <div className="text-muted">No bookings found for this email.</div>
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <h1>Your Bookings</h1>
+      <ul>
+        {bookings.map((b) => (
+          <li key={b.id}>
+            {b.product} | {b.start_date} - {b.end_date} | ${b.total_price}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
