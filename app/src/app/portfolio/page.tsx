@@ -3,20 +3,22 @@ import ProductList from "@/components/ProductList";
 import Pagination from "@/components/Pagination";
 
 type PageProps = {
-    searchParams?: { [key: string]: string | string[] | undefined };
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined } | null>;
 };
 
 export default async function Portfolio({searchParams}: PageProps) {
-    const rawPage = Array.isArray(searchParams?.page)
-        ? searchParams?.page[0]
-        : searchParams?.page;
+    const params = (searchParams ? await searchParams : undefined) ?? {};
+
+    const rawPage = Array.isArray(params.page)
+        ? params.page[0]
+        : params.page;
 
     const pageNum = rawPage ? parseInt(String(rawPage), 10) : 1;
     const safePage = Number.isFinite(pageNum) && pageNum > 0 ? pageNum : 1;
 
-    const rawMin = Array.isArray(searchParams?.min_rating)
-        ? searchParams?.min_rating[0]
-        : (searchParams as any)?.min_rating;
+    const rawMin = Array.isArray(params.min_rating)
+        ? params.min_rating[0]
+        : (params as any)?.min_rating;
 
     const minVal = rawMin !== undefined ? parseFloat(String(rawMin)) : 0;
     const safeMin = Number.isFinite(minVal) ? Math.min(5, Math.max(0, minVal)) : 0;
