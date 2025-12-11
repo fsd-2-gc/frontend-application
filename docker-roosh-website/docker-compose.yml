@@ -23,6 +23,19 @@ services:
       retries: 30
       start_period: 60s
 
+  cypress:
+    image: cypress/included:15.7.1
+    working_dir: /app
+    entrypoint: [ "sh", "-c", "tail -f /dev/null" ]
+    networks:
+      - roosh-shared-network
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ../app:/app
+      - /app/node_modules
+
 networks:
   roosh-shared-network:
     external: true
