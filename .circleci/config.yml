@@ -15,12 +15,66 @@ jobs:
           working_directory: app
           command: npm run test:run
 
+  deploy-to-vps-prod:
+    docker:
+      - image: node:20-alpine
+    steps:
+      - checkout
+      - run:
+          name: "Create app env file"
+          working_directory: app
+          command: echo "$BASE64_ENV_PROD" | base64 -d > .env
+      - run:
+          name: "Install dependencies and build app"
+          working_directory: app
+          command: |
+            npm ci
+            npm run build
+      - run:
+          name: "Install OpenSSH client and rsync"
+          command: apk add --no-cache openssh rsync
+      - add_ssh_keys
+      - run:
+          name: "Upload files using rsync"
+          command: |
+            rsync -azv --delete \
+              -e "ssh -o StrictHostKeyChecking=no" \
+              --exclude='.git' \
+              --exclude='.circleci' \
+              --exclude='*.log' \
+              ./ $VPS_USER@$VPS_HOST:$PROD_PROJECT_DIR/
+      - run:
+          name: "Deploy website on VPS via SSH"
+          command: |
+            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "
+              set -euo pipefail
+              cd $PROD_PROJECT_DIR/docker-roosh-website
+              docker compose -f docker-compose-prod.yml down || true
+              docker compose -f docker-compose-prod.yml up -d --build
+            "
+
+
 workflows:
   version: 2
-  build-and-deploy-dev:
+  build-and-deploy-prod:
     jobs:
       - run-unit-test:
           filters:
             branches:
               only:
-                - develop
+                - main
+      - hold-prod:
+          type: approval
+          requires:
+            - run-unit-test
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-to-vps-prod:
+          requires:
+            - hold-prod
+          filters:
+            branches:
+              only:
+                - main

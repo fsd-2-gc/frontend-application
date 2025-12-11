@@ -1,0 +1,26 @@
+services:
+  roosh-fsd-02-gc-website-prod:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm run start -- -H 0.0.0.0 -p 3000"
+    env_file:
+      - ../app/.env
+    volumes:
+      - ../app:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.roosh_fsd_02_gc_website_prod.rule=Host(`roosh-fsd-02-gc.nl`, `www.roosh-fsd-02-gc.nl`)"
+      - "traefik.http.routers.roosh_fsd_02_gc_website_prod.entrypoints=websecure"
+      - "traefik.http.routers.roosh_fsd_02_gc_website_prod.tls.certresolver=cloudflare"
+      - "traefik.http.services.roosh_fsd_02_gc_website_prod.loadbalancer.server.port=8000"
+    networks:
+      - traefik
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - NEXT_TELEMETRY_DISABLED=1
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external: true
