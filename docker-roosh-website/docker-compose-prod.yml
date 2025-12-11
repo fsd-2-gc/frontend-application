@@ -12,7 +12,7 @@ services:
       - "traefik.http.routers.roosh_fsd_02_gc_website_prod.rule=Host(`roosh-fsd-02-gc.nl`, `www.roosh-fsd-02-gc.nl`)"
       - "traefik.http.routers.roosh_fsd_02_gc_website_prod.entrypoints=websecure"
       - "traefik.http.routers.roosh_fsd_02_gc_website_prod.tls.certresolver=cloudflare"
-      - "traefik.http.services.roosh_fsd_02_gc_website_prod.loadbalancer.server.port=8000"
+      - "traefik.http.services.roosh_fsd_02_gc_website_prod.loadbalancer.server.port=3000"
     networks:
       - traefik
     environment:
