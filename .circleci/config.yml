@@ -50,7 +50,7 @@ jobs:
           name: "Ensure external network exists"
           command: docker network create roosh-shared-network
       - run:
-          name: "Start stack with docker-compose-local.yml"
+          name: "Start stack with docker-compose.yml"
           command: |
             set -e
             docker compose -f docker-roosh-website/docker-compose.yml up -d
@@ -89,9 +89,9 @@ jobs:
             else
               echo "App did not become ready in time"
               echo "===== docker compose ps ====="
-              docker compose -f docker-roosh-website/docker-compose-local.yml ps || true
+              docker compose -f docker-roosh-website/docker-compose.yml ps || true
               echo "===== recent web logs ====="
-              docker compose -f docker-roosh-website/docker-compose-local.yml logs --tail=200 web || true
+              docker compose -f docker-roosh-website/docker-compose.yml logs --tail=200 web || true
               exit 1
             fi
       - run:
@@ -103,7 +103,7 @@ jobs:
           name: "Teardown docker compose"
           when: always
           command: |
-            docker compose -f docker-roosh-website/docker-compose-local.yml down -v --remove-orphans || true
+            docker compose -f docker-roosh-website/docker-compose.yml down -v --remove-orphans || true
 
   deploy-to-vps-prod:
     docker:
