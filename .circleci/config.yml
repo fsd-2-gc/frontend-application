@@ -82,7 +82,6 @@ workflows:
       - run-static-code-analysis:
           requires:
             - run-unit-test
-            - run-end-to-end-test
           filters:
             branches:
               only:
