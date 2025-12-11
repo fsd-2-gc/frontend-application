@@ -12,6 +12,7 @@
     "test:run": "vitest run"
   },
   "dependencies": {
+    "@sonar/scan": "^4.3.2",
     "bootstrap": "^5.3.8",
     "dotenv": "^17.2.3",
     "jsdom": "^27.2.0",
