@@ -31,79 +31,79 @@ jobs:
               -Dsonar.projectKey=$SONAR_DEV_PROJECT_KEY \
               -Dsonar.organization=$SONAR_DEV_ORGANIZATION
 
-    run-end-to-end-test:
-      machine:
-        image: ubuntu-2204:current
-      steps:
-        - checkout
-        - run:
-            name: "Create app env file"
-            working_directory: app
-            command: echo "$BASE64_ENV_PROD" | base64 -d > .env
-        - run:
-            name: "Docker info"
-            command: |
-              docker --version
-              docker compose version || docker-compose --version || true
-              docker info | sed -n '1,50p'
-        - run:
-            name: "Ensure external network exists"
-            command: docker network create roosh-shared-network
-        - run:
-            name: "Start stack with docker-compose-local.yml"
-            command: |
-              set -e
-              docker compose -f docker-roosh-website/docker-compose.yml up -d
-        - run:
-            name: "Install dockerize (host)"
-            command: |
-              set -euo pipefail
-              ARCH=$(uname -m)
-              case "$ARCH" in
-                x86_64|amd64)
-                  DL_ARCH=amd64
-                  ;;
-                aarch64|arm64)
-                  DL_ARCH=arm64
-                  ;;
-                *)
-                  echo "Unsupported architecture: $ARCH — defaulting to amd64"
-                  DL_ARCH=amd64
-                  ;;
-              esac
-              DOCKERIZE_VERSION=${DOCKERIZE_VERSION:-v0.7.0}
-              URL="https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-${DL_ARCH}-${DOCKERIZE_VERSION}.tar.gz"
-              echo "Downloading dockerize ${DOCKERIZE_VERSION} for ${DL_ARCH}"
-              echo "URL: $URL"
-              curl -fsSL -o /tmp/dockerize.tgz "$URL"
-              sudo tar -C /usr/local/bin -xzf /tmp/dockerize.tgz dockerize
-              dockerize --version
-        - run:
-            name: "Wait for http://localhost:3000 (dockerize)"
-            no_output_timeout: 10m
-            command: |
-              set -e
-              echo "Waiting for app (http://localhost:3000)"
-              if dockerize -wait http://localhost:3000 -timeout 5m -wait-retry-interval 2s; then
-                echo "App is up"
-              else
-                echo "App did not become ready in time"
-                echo "===== docker compose ps ====="
-                docker compose -f docker-roosh-website/docker-compose-local.yml ps || true
-                echo "===== recent web logs ====="
-                docker compose -f docker-roosh-website/docker-compose-local.yml logs --tail=200 web || true
-                exit 1
-              fi
-        - run:
-            name: "Run Cypress E2E tests inside compose cypress service"
-            command: |
-              set -e
-              docker exec -it docker-roosh-website-cypress-1 npx cypress run
-        - run:
-            name: "Teardown docker compose"
-            when: always
-            command: |
-              docker compose -f docker-roosh-website/docker-compose-local.yml down -v --remove-orphans || true
+  run-end-to-end-test:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - checkout
+      - run:
+          name: "Create app env file"
+          working_directory: app
+          command: echo "$BASE64_ENV_PROD" | base64 -d > .env
+      - run:
+          name: "Docker info"
+          command: |
+            docker --version
+            docker compose version || docker-compose --version || true
+            docker info | sed -n '1,50p'
+      - run:
+          name: "Ensure external network exists"
+          command: docker network create roosh-shared-network
+      - run:
+          name: "Start stack with docker-compose-local.yml"
+          command: |
+            set -e
+            docker compose -f docker-roosh-website/docker-compose.yml up -d
+      - run:
+          name: "Install dockerize (host)"
+          command: |
+            set -euo pipefail
+            ARCH=$(uname -m)
+            case "$ARCH" in
+              x86_64|amd64)
+                DL_ARCH=amd64
+                ;;
+              aarch64|arm64)
+                DL_ARCH=arm64
+                ;;
+              *)
+                echo "Unsupported architecture: $ARCH — defaulting to amd64"
+                DL_ARCH=amd64
+                ;;
+            esac
+            DOCKERIZE_VERSION=${DOCKERIZE_VERSION:-v0.7.0}
+            URL="https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-${DL_ARCH}-${DOCKERIZE_VERSION}.tar.gz"
+            echo "Downloading dockerize ${DOCKERIZE_VERSION} for ${DL_ARCH}"
+            echo "URL: $URL"
+            curl -fsSL -o /tmp/dockerize.tgz "$URL"
+            sudo tar -C /usr/local/bin -xzf /tmp/dockerize.tgz dockerize
+            dockerize --version
+      - run:
+          name: "Wait for http://localhost:3000 (dockerize)"
+          no_output_timeout: 10m
+          command: |
+            set -e
+            echo "Waiting for app (http://localhost:3000)"
+            if dockerize -wait http://localhost:3000 -timeout 5m -wait-retry-interval 2s; then
+              echo "App is up"
+            else
+              echo "App did not become ready in time"
+              echo "===== docker compose ps ====="
+              docker compose -f docker-roosh-website/docker-compose-local.yml ps || true
+              echo "===== recent web logs ====="
+              docker compose -f docker-roosh-website/docker-compose-local.yml logs --tail=200 web || true
+              exit 1
+            fi
+      - run:
+          name: "Run Cypress E2E tests inside compose cypress service"
+          command: |
+            set -e
+            docker exec -it docker-roosh-website-cypress-1 npx cypress run
+      - run:
+          name: "Teardown docker compose"
+          when: always
+          command: |
+            docker compose -f docker-roosh-website/docker-compose-local.yml down -v --remove-orphans || true
 
   deploy-to-vps-prod:
     docker:
