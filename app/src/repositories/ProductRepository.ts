@@ -9,7 +9,7 @@ export class ProductRepository {
         return process.env.API_KEY as string;
     }
 
-    static async getProducts(page: number = 1, minRating: number = 0) {
+    static async getProducts(page: number = 1, minRating: number = 0, startDate?: string, endDate?: string) {
         const clamped = Number.isFinite(minRating as number)
             ? Math.min(5, Math.max(0, Number(minRating)))
             : undefined;
@@ -19,6 +19,14 @@ export class ProductRepository {
         });
         if (clamped !== undefined) {
             params.set("min_rating", String(clamped));
+        }
+
+        if (startDate){
+            params.set("start_Date", startDate);
+        }
+
+        if (endDate){
+            params.set("end_Date", endDate)
         }
 
         const url = `${this.BASE_URL}/getproducts/?${params.toString()}`;
