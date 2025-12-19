@@ -13,6 +13,11 @@ services:
       - "traefik.http.routers.roosh_fsd_02_gc_website_prod.entrypoints=websecure"
       - "traefik.http.routers.roosh_fsd_02_gc_website_prod.tls.certresolver=cloudflare"
       - "traefik.http.services.roosh_fsd_02_gc_website_prod.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
     networks:
       - traefik
     environment:
