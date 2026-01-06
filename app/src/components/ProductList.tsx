@@ -2,15 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {useEffect, useMemo, useState} from "react";
-import type {Product} from "@/models/Product";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import type { Product } from "@/models/Product";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
     products: Product[];
 };
 
-export default function ProductList({products}: Props) {
+export default function ProductList({ products }: Props) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -23,11 +23,24 @@ export default function ProductList({products}: Props) {
 
     const [minRating, setMinRating] = useState<number>(initialMin);
 
+    const [startDate, setStartDate] = useState(
+        searchParams?.get("start_date") ?? ""
+    );
+    const [endDate, setEndDate] = useState(
+        searchParams?.get("end_date") ?? ""
+    );
+
     useEffect(() => {
         const raw = searchParams?.get("min_rating");
         const num = raw !== null ? parseFloat(raw) : 0;
         const safe = Number.isFinite(num) ? Math.min(5, Math.max(0, num)) : 0;
         if (safe !== minRating) setMinRating(safe);
+
+        const s = searchParams?.get("start_date") ?? "";
+        const e = searchParams?.get("end_date") ?? "";
+        if (s !== startDate) setStartDate(s);
+        if (e !== endDate) setEndDate(e);
+
     }, [searchParams]);
 
     const filteredProducts = useMemo(() => {
@@ -44,7 +57,7 @@ export default function ProductList({products}: Props) {
                     <select
                         id="min-rating"
                         className="form-select form-select-sm"
-                        style={{maxWidth: 160}}
+                        style={{ maxWidth: 160 }}
                         value={minRating}
                         onChange={(e) => {
                             const value = Math.min(5, Math.max(0, Number(e.target.value)));
@@ -69,13 +82,49 @@ export default function ProductList({products}: Props) {
                         <option value={5}>5 stars</option>
                     </select>
                 </div>
+
+                <div className="d-flex align-items-center gap-2">
+                    <label className="form-label mb-0">From</label>
+                    <input
+                        type="date"
+                        className="form-control form-control-sm"
+                        value={startDate}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setStartDate(value);
+
+                            const params = new URLSearchParams(searchParams?.toString() || "");
+                            value ? params.set("start_date", value) : params.delete("start_date");
+                            params.set("page", "1");
+
+                            router.push(`${pathname}?${params.toString()}`);
+                        }}
+                    />
+
+                    <label className="form-label mb-0">To</label>
+                    <input
+                        type="date"
+                        className="form-control form-control-sm"
+                        value={endDate}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setEndDate(value);
+
+                            const params = new URLSearchParams(searchParams?.toString() || "");
+                            value ? params.set("end_date", value) : params.delete("end_date");
+                            params.set("page", "1");
+
+                            router.push(`${pathname}?${params.toString()}`);
+                        }}
+                    />
+                </div>
             </div>
 
             {filteredProducts.map((p) => (
                 <div key={p.id} className="card shadow-sm border-0 rounded-3 p-3">
                     <div className="row g-3 align-items-center">
                         <div className="col-md-3 text-center">
-                            <div className="bg-light rounded-3 overflow-hidden" style={{height: "160px"}}>
+                            <div className="bg-light rounded-3 overflow-hidden" style={{ height: "160px" }}>
                                 <Image
                                     src="https://placehold.co/240x160"
                                     alt={p.name}
