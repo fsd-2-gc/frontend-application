@@ -1,4 +1,5 @@
 import type { Booking } from "@/models/Booking";
+import { BookingRepository } from "@/repositories/BookingRepository";
 
 export class BookingService {
     static async getBookingById(id: number) {
@@ -35,5 +36,9 @@ export class BookingService {
         }
 
         return Number(json.booking_id);
+    }
+
+    static async updateBooking(bookingId: number, data: Omit<Booking, "id" | "status">): Promise<number> {
+        return BookingRepository.updateBooking(bookingId, data);
     }
 }

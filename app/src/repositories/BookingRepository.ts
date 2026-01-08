@@ -1,4 +1,6 @@
-import type {Booking} from "@/models/Booking";
+import type { Booking } from "@/models/Booking";
+
+type BookingWritePayload = Omit<Booking, "id" | "status">;
 
 export class BookingRepository {
     private static get BASE_URL() {
@@ -65,7 +67,42 @@ export class BookingRepository {
             throw new Error(String(json?.data ?? "Failed to create booking"));
         }
 
-        // Return only the new booking ID, mirroring how ProductRepository returns parsed primitives
+        return Number(json.data.booking_id);
+    }
+
+    static async updateBooking(bookingId: number, booking: BookingWritePayload): Promise<number> {
+        if (!Number.isFinite(bookingId) || bookingId <= 0) {
+            throw new Error("Invalid booking id");
+        }
+
+        const url = `${this.BASE_URL}/updatebooking/${bookingId}/`;
+
+        const payload = {
+            product_id: booking.productId,
+            customer_email: booking.customerEmail,
+            reseller_id: booking.resellerId,
+            start_date: booking.startDate.toISOString(),
+            end_date: booking.endDate.toISOString(),
+            total_price: Number(booking.totalPrice),
+        };
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const json = await response.json();
+
+        if (!response.ok || !json?.data?.booking_id) {
+            console.error("Booking updaten mislukt:", json);
+            throw new Error(String(json?.data ?? "Failed to update booking"));
+        }
+
         return Number(json.data.booking_id);
     }
 
