@@ -1,12 +1,13 @@
 import CreateBooking from "@/components/CreateBooking";
 
-export default function Page({
+export default async function Page({
     searchParams,
 }: {
-    searchParams: { productId?: string; resellerId?: string };
+    searchParams: Promise<{ productId?: string; resellerId?: string }>;
 }) {
-    const productId = Number(searchParams?.productId);
-    const resellerId = Number(searchParams?.resellerId ?? 1);
+    const { productId: productIdParam, resellerId: resellerIdParam } = await searchParams;
+    const productId = Number(productIdParam);
+    const resellerId = Number(resellerIdParam ?? 1);
 
     if (!productId || Number.isNaN(productId)) {
         return (

@@ -4,10 +4,11 @@ import { BookingRepository } from "@/repositories/BookingRepository";
 // GET /api/bookings/:id
 export async function GET(
   _req: Request,
-  ctx: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = Number(ctx.params.id);
+    const { id: idParam } = await ctx.params;
+    const id = Number(idParam);
     if (!Number.isFinite(id) || id <= 0) {
       return NextResponse.json({ error: "Invalid id" }, { status: 400 });
     }
