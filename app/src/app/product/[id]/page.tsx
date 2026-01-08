@@ -3,11 +3,12 @@ import {ProductService} from "@/services/ProductService";
 import type {Product} from "@/models/Product";
 
 type PageProps = {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 };
 
 export default async function ProductDetails({params}: PageProps) {
-    const product: Product | null = await ProductService.getProduct(Number(params.id));
+    const {id} = await params;
+    const product: Product | null = await ProductService.getProduct(Number(id));
 
     if (!product) {
         return <div className="text-center m-5">Product not found</div>;
