@@ -32,7 +32,7 @@ jobs:
       - run:
           name: "Run Sonar scan"
           command: |
-            npx -y @sonar/scan \
+            sonar \
               -Dsonar.token=$SONAR_DEV_TOKEN \
               -Dsonar.projectKey=$SONAR_DEV_PROJECT_KEY \
               -Dsonar.organization=$SONAR_DEV_ORGANIZATION \
