@@ -32,10 +32,10 @@ jobs:
       - run:
           name: "Run Sonar scan"
           command: |
-            sonar \
+            npx -y @sonar/scan \
               -Dsonar.token=$SONAR_DEV_TOKEN \
               -Dsonar.projectKey=$SONAR_DEV_PROJECT_KEY \
-              -Dsonar.organization=$SONAR_DEV_ORGANIZATION
+              -Dsonar.organization=$SONAR_DEV_ORGANIZATION \
               -Dsonar.javascript.lcov.reportPaths=app/coverage/lcov.info
 
   run-end-to-end-test:
