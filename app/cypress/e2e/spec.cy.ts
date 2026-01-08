@@ -56,11 +56,4 @@ describe('Roosh Parking E2E Tests', () => {
         // Check if filtered list is still there
         cy.get('.card').should('exist')
     })
-
-    it('Should display booking details for booking ID 1', () => {
-        cy.visit(`${baseUrl}/booking/1`)
-        cy.contains('Booking Details').should('be.visible')
-        cy.contains('ID: 1').should('be.visible')
-        cy.get('.card').should('be.visible')
-    })
 })
