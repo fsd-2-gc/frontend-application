@@ -1,5 +1,6 @@
 import { BookingService } from "@/services/BookingService";
-import { Booking } from "@/models/Booking";
+import { Booking, Status } from "@/models/Booking";
+import CancelBookingButton from "@/components/CancelBookingButton";
 import "@/css/booking.css";
 
 type PageProps = {
@@ -43,9 +44,19 @@ export default async function BookingPage({ params }: PageProps) {
                         <p><strong>Start Date:</strong> {booking.startDate.toLocaleString()}</p>
                         <p><strong>End Date:</strong> {booking.endDate.toLocaleString()}</p>
                         <p><strong>Total Price:</strong> ${booking.totalPrice.toFixed(2)}</p>
-                        <p><strong>Status:</strong> {booking.status}</p>
+                        <p><strong>Status:</strong> {Status[booking.status]}</p>
                     </div>
                 </div>
+
+                {booking.status !== Status.Cancelled && (
+                    <div className="redbox">
+                        <CancelBookingButton bookingId={booking.id} />
+                    </div>
+                )}
+
+                {booking.status === Status.Cancelled && (
+                    <div className="alert info">This booking has been cancelled.</div>
+                )}
             </div>
         </div>
     );

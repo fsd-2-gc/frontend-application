@@ -9,4 +9,8 @@ export class BookingService {
     static async submitNewBooking(booking: Omit<Booking, "id">) {
         return BookingRepository.createBooking(booking)
     }
+
+    static async cancelBooking(id: number) {
+        return BookingRepository.cancelBooking(id)
+    }
 }
