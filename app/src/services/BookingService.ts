@@ -9,4 +9,9 @@ export class BookingService {
     static async submitNewBooking(booking: Omit<Booking, "id">) {
         return BookingRepository.createBooking(booking)
     }
+
+    static async getBookingsByEmail(email: string) {
+        return BookingRepository.getBookingsByEmail(email);
+    }
+
 }

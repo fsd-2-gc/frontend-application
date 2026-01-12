@@ -1,4 +1,4 @@
-import type {Booking} from "@/models/Booking";
+import type { Booking } from "@/models/Booking";
 
 export class BookingRepository {
     private static get BASE_URL() {
@@ -67,6 +67,32 @@ export class BookingRepository {
 
         // Return only the new booking ID, mirroring how ProductRepository returns parsed primitives
         return Number(json.data.booking_id);
+    }
+
+    static async getBookingsByEmail(email: string): Promise<Booking[]> {
+        if (!email) {
+            return [];
+        }
+
+        const url = `${this.BASE_URL}/getbookings/${(email)}/`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+        });
+
+        const json = await response.json();
+
+        if (!response.ok || !Array.isArray(json?.data)) {
+            console.error("Bookings ophalen mislukt:", json);
+            return [];
+        }
+
+        return json.data.map(this.mapBooking);
     }
 
     private static mapBooking(b: any): Booking {
