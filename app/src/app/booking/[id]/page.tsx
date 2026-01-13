@@ -1,5 +1,5 @@
-import { BookingService } from "@/services/BookingService";
-import { Booking, Status } from "@/models/Booking";
+import {BookingService} from "@/services/BookingService";
+import {Booking, Status} from "@/models/Booking";
 import RefundButtonWrapper from "./RefundButtonWrapper";
 import CancelBookingButton from "@/components/CancelBookingButton";
 import "@/css/booking.css";
@@ -8,7 +8,7 @@ type PageProps = {
     params: { id: string };
 };
 
-export default async function BookingPage({ params }: PageProps) {
+export default async function BookingPage({params}: PageProps) {
     const resolvedParams = await params;
     const bookingId = Number(resolvedParams.id);
 
@@ -50,9 +50,7 @@ export default async function BookingPage({ params }: PageProps) {
                 </div>
 
                 {booking.status !== Status.Cancelled && (
-                    <div className="redbox">
-                        <CancelBookingButton bookingId={booking.id} />
-                    </div>
+                    <CancelBookingButton bookingId={booking.id}/>
                 )}
 
                 {booking.status === Status.Cancelled && (
@@ -60,14 +58,14 @@ export default async function BookingPage({ params }: PageProps) {
                 )}
 
                 <div className="actions">
-                    {booking.status !== Status.Paid && (
+                    {booking.status !== Status.Paid && booking.status !== Status.Cancelled && (
                         <a className="btn btn-primary" href={`/payment?bookingId=${booking.id}`}>
                             Pay booking
                         </a>
                     )}
 
-                    {booking.status === Status.Paid && (
-                        <RefundButtonWrapper bookingId={booking.id} />
+                    {booking.status === Status.Paid || booking.status === Status.Cancelled && (
+                        <RefundButtonWrapper bookingId={booking.id}/>
                     )}
                 </div>
             </div>

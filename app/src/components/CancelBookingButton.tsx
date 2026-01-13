@@ -38,14 +38,14 @@ export default function CancelBookingButton({ bookingId }: Props) {
         }
     };
 
-    if (success) return <div className="alert success">Booking cancelled successfully.</div>;
+    if (success) return <div className="alert alert-success">Booking cancelled successfully.</div>;
 
     return (
         <div>
-            <button className="btn danger" onClick={handleCancel} disabled={loading}>
+            <button className="btn btn-danger mb-2" onClick={handleCancel} disabled={loading}>
                 {loading ? "Cancelling..." : "Cancel Booking"}
             </button>
-            {error && <p className="alert danger">{error}</p>}
+            {error && <p className="alert alert-danger">{error}</p>}
         </div>
     );
 }
