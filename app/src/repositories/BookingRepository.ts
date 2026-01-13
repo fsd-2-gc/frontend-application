@@ -1,4 +1,5 @@
 import type {Booking} from "@/models/Booking";
+import { Status } from "@/models/Booking";
 
 export class BookingRepository {
     private static get BASE_URL() {
@@ -22,16 +23,13 @@ export class BookingRepository {
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 "X-API-KEY": this.API_KEY,
+                "Cache-Control": "no-cache",
             },
         });
 
         const json = await response.json();
 
-        if (!response.ok || !json?.data) {
-            console.error("Booking ophalen mislukt:", json);
-            return null;
-        }
-
+        console.log("Raw json.data:", json.data);
         return this.mapBooking(json.data);
     }
 
@@ -70,6 +68,7 @@ export class BookingRepository {
     }
 
     private static mapBooking(b: any): Booking {
+        console.log("Raw booking data status:", b.status, typeof b.status);
         return {
             id: Number(b.id ?? b.booking_id),
             productId: b.product_id,
@@ -78,7 +77,7 @@ export class BookingRepository {
             startDate: new Date(b.start_date),
             endDate: new Date(b.end_date),
             totalPrice: Number(b.total_price),
-            status: b.status,
+            status: b.status as Status,
         };
     }
 }
