@@ -5,6 +5,7 @@ import {useSearchParams, useRouter} from "next/navigation";
 import "../../css/booking.css";
 
 function PaymentForm() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const bookingId = Number(searchParams.get("bookingId"));
 
@@ -29,6 +30,12 @@ function PaymentForm() {
             }
 
             setResult(true);
+
+            if (success) {
+                setTimeout(() => {
+                    router.push(`/booking/${bookingId}`);
+                }, 1500);
+            }
         } catch {
             setResult(false);
         } finally {
@@ -82,7 +89,7 @@ function PaymentForm() {
 
                 {result !== null && (
                     <div className={`alert mt-3 ${result ? "alert-success" : "alert-danger"}`}>
-                        {result ? "Payment successful!" : "Payment failed!"}
+                        {result ? (success ? "Payment successful! Redirecting..." : "Payment processed successfully.") : "Payment failed!"}
                     </div>
                 )}
             </div>
@@ -93,7 +100,7 @@ function PaymentForm() {
 export default function PaymentPage() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <PaymentForm />
+            <PaymentForm/>
         </Suspense>
     );
 }
