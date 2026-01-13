@@ -1,4 +1,5 @@
-import type { Booking } from "@/models/Booking";
+import type {Booking} from "@/models/Booking";
+import { Status } from "@/models/Booking";
 
 export class BookingRepository {
     private static get BASE_URL() {
@@ -22,6 +23,7 @@ export class BookingRepository {
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 "X-API-KEY": this.API_KEY,
+                "Cache-Control": "no-cache",
             },
         });
 
@@ -104,7 +106,7 @@ export class BookingRepository {
             startDate: new Date(b.start_date),
             endDate: new Date(b.end_date),
             totalPrice: Number(b.total_price),
-            status: b.status,
+            status: b.status as Status,
         };
     }
 }
