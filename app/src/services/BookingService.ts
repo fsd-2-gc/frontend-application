@@ -1,39 +1,39 @@
 import type { Booking } from "@/models/Booking";
+import { BookingRepository } from "@/repositories/BookingRepository";
 
 export class BookingService {
     static async getBookingById(id: number) {
-        if (!Number.isFinite(id as number) || id <= 0) return null;
-
-        const res = await fetch(`/api/bookings/${id}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        if (!res.ok) return null;
-        const json = await res.json();
-        return json.data ?? null;
-    }
-
-    static async submitNewBooking(data: Omit<Booking, "id">) {
-        const res = await fetch(`/api/bookings`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                productId: data.productId,
-                resellerId: data.resellerId,
-                customerEmail: data.customerEmail,
-                startDate: data.startDate,
-                endDate: data.endDate,
-                totalPrice: data.totalPrice,
-                status: data.status,
-            }),
-        });
-
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok || typeof json?.booking_id === "undefined") {
-            throw new Error(String(json?.error ?? "Failed to create booking"));
+        if (typeof window !== "undefined") {
+            const res = await fetch(`/api/bookings/${id}`);
+            const json = await res.json();
+            return json.data;
         }
-
-        return Number(json.booking_id);
+        return BookingRepository.getBookingById(id);
     }
+
+    static async submitNewBooking(booking: Omit<Booking, "id">) {
+        if (typeof window !== "undefined") {
+            const response = await fetch("/api/bookings/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(booking),
+            });
+
+            const json = await response.json();
+
+            if (!response.ok) {
+                throw new Error(json.error || "Failed to create booking via client service");
+            }
+
+            return json.data.booking_id;
+        }
+        return BookingRepository.createBooking(booking)
+    }
+
+    static async getBookingsByEmail(email: string) {
+        return BookingRepository.getBookingsByEmail(email);
+    }
+
 }
