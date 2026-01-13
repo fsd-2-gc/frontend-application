@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
     output: "standalone",
@@ -9,10 +9,11 @@ const nextConfig: NextConfig = {
         ignoreBuildErrors: true,
     },
     async rewrites() {
+        const apiBaseUrl = process.env.API_BASE_URL || "http://localhost:8000/v1";
         return [
             {
-                source: "/api/:path*",
-                destination: "http://localhost:8000/v1/:path*",
+                source: "/api/external/:path*",
+                destination: `${apiBaseUrl}/:path*`,
             },
         ];
     },

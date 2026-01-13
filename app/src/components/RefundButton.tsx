@@ -16,13 +16,13 @@
 
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/bookings/${bookingId}/refund/`,
+                    "/api/refund",
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "X-API-KEY": process.env.NEXT_PUBLIC_API_KEY!,
                         },
+                        body: JSON.stringify({ bookingId }),
                     }
                 );
 

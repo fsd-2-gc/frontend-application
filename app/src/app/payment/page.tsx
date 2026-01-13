@@ -1,10 +1,10 @@
 "use client";
 
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import {useSearchParams, useRouter} from "next/navigation";
 import "../../css/booking.css";
 
-export default function PaymentPage() {
+function PaymentForm() {
     const searchParams = useSearchParams();
     const bookingId = Number(searchParams.get("bookingId"));
 
@@ -87,5 +87,13 @@ export default function PaymentPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function PaymentPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <PaymentForm />
+        </Suspense>
     );
 }

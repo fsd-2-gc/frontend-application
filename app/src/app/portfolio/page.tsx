@@ -1,3 +1,4 @@
+import {Suspense} from "react";
 import { ProductService } from "@/services/ProductService";
 import ProductList from "@/components/ProductList";
 import Pagination from "@/components/Pagination";
@@ -6,7 +7,7 @@ type PageProps = {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined } | null>;
 };
 
-export default async function Portfolio({ searchParams }: PageProps) {
+async function PortfolioContent({ searchParams }: { searchParams: PageProps["searchParams"] }) {
     const params = (searchParams ? await searchParams : undefined) ?? {};
 
     const rawPage = Array.isArray(params.page)
@@ -46,15 +47,23 @@ export default async function Portfolio({ searchParams }: PageProps) {
     const products = await ProductService.getProducts(safePage, safeMin, startDate, endDate);
 
     return (
+        <div>
+            <ProductList products={products.items} />
+            <div className={"mt-2"}>
+                <Pagination currentPage={safePage} maxPage={products.total_pages} />
+            </div>
+        </div>
+    );
+}
+
+export default async function Portfolio({ searchParams }: PageProps) {
+    return (
         <main className="my-5 container">
             <h1 className="fw-bold mb-4 text-center">Available Parking Services</h1>
 
-            <div>
-                <ProductList products={products.items} />
-                <div className={"mt-2"}>
-                    <Pagination currentPage={safePage} maxPage={products.total_pages} />
-                </div>
-            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+                <PortfolioContent searchParams={searchParams} />
+            </Suspense>
         </main>
     );
 }
