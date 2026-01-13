@@ -1,16 +1,13 @@
-import { BookingService } from "@/services/BookingService";
-import { Booking, Status } from "@/models/Booking";
+import {BookingService} from "@/services/BookingService";
+import {Booking, Status} from "@/models/Booking";
 import RefundButtonWrapper from "./RefundButtonWrapper";
 import "@/css/booking.css";
-
-console.log("IS SERVER:", typeof window === "undefined");
-
 
 type PageProps = {
     params: { id: string };
 };
 
-export default async function BookingPage({ params }: PageProps) {
+export default async function BookingPage({params}: PageProps) {
     const resolvedParams = await params;
     const bookingId = Number(resolvedParams.id);
 
@@ -59,7 +56,7 @@ export default async function BookingPage({ params }: PageProps) {
                     )}
 
                     {booking.status === Status.Paid && (
-                        <RefundButtonWrapper bookingId={booking.id} />
+                        <RefundButtonWrapper bookingId={booking.id}/>
                     )}
                 </div>
             </div>

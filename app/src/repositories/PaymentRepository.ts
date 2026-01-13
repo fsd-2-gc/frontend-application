@@ -18,6 +18,7 @@ static async markPaid(bookingId: number) {
             Accept: "application/json",
             "X-API-KEY": this.API_KEY,
         },
+        body: JSON.stringify({}),
     });
 
     const json = await res.json();
@@ -42,6 +43,7 @@ static async markPaid(bookingId: number) {
                     Accept: "application/json",
                     "X-API-KEY": this.API_KEY,
                 },
+                body: JSON.stringify({}),
             }
         );
 
