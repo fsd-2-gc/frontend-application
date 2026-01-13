@@ -44,7 +44,7 @@
         return (
             <>
                 <button
-                    className="btn danger"
+                    className="btn btn-danger"
                     onClick={refund}
                     disabled={loading}
                 >

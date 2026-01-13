@@ -53,7 +53,7 @@ export default async function BookingPage({ params }: PageProps) {
 
                 <div className="actions">
                     {booking.status !== Status.Paid && (
-                        <a className="btn" href={`/payment?bookingId=${booking.id}`}>
+                        <a className="btn btn-primary" href={`/payment?bookingId=${booking.id}`}>
                             Pay booking
                         </a>
                     )}

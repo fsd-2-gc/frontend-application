@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import {useState} from "react";
+import {useSearchParams, useRouter} from "next/navigation";
 import "../../css/booking.css";
 
 export default function PaymentPage() {
@@ -12,30 +12,29 @@ export default function PaymentPage() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<null | boolean>(null);
 
-const handlePayment = async () => {
-    setLoading(true);
+    const handlePayment = async () => {
+        setLoading(true);
 
-    try {
-        const res = await fetch("/api/payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ bookingId, success }),
-        });
+        try {
+            const res = await fetch("/api/payment", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({bookingId, success}),
+            });
 
-        const json = await res.json();
+            const json = await res.json();
 
-        if (!res.ok) {
-            throw new Error(json?.error ?? "Payment failed");
+            if (!res.ok) {
+                throw new Error(json?.error ?? "Payment failed");
+            }
+
+            setResult(true);
+        } catch {
+            setResult(false);
+        } finally {
+            setLoading(false);
         }
-
-        setResult(true);
-    } catch {
-        setResult(false);
-    } finally {
-        setLoading(false);
-    }
-};
-
+    };
 
 
     if (!bookingId) {
@@ -74,7 +73,7 @@ const handlePayment = async () => {
                 </div>
 
                 <button
-                    className="btn"
+                    className="btn btn-success"
                     disabled={loading}
                     onClick={handlePayment}
                 >
@@ -82,7 +81,7 @@ const handlePayment = async () => {
                 </button>
 
                 {result !== null && (
-                    <div className={`alert ${result ? "success" : "danger"}`}>
+                    <div className={`alert mt-3 ${result ? "alert-success" : "alert-danger"}`}>
                         {result ? "Payment successful!" : "Payment failed!"}
                     </div>
                 )}
