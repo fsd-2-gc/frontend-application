@@ -44,12 +44,12 @@ export default async function BookingPage({params}: PageProps) {
                         <p><strong>Start Date:</strong> {booking.startDate.toLocaleString()}</p>
                         <p><strong>End Date:</strong> {booking.endDate.toLocaleString()}</p>
                         <p><strong>Total Price:</strong> €{booking.totalPrice.toFixed(2)}</p>
-                        <p><strong>Status:</strong> {booking.status === Status.Paid ? 'Paid' : 'Not Paid'}</p>
+                        <p><strong>Status:</strong> {Status[booking.status]}</p>
                     </div>
                 </div>
 
                 <div className="actions">
-                    {booking.status !== Status.Paid && (
+                    {booking.status === Status.Pending && (
                         <a className="btn btn-primary" href={`/payment?bookingId=${booking.id}`}>
                             Pay booking
                         </a>

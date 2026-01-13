@@ -17,9 +17,17 @@ export default function Home() {
                         <Link
                             href="/portfolio"
                             className="btn btn-lg mt-4 px-5 py-3 fw-semibold text-white"
-                            style={{ backgroundColor: "#fd6a01", borderColor: "#fd6a01" }}
+                            style={{backgroundColor: "#fd6a01", borderColor: "#fd6a01"}}
                         >
                             Browse Parking Spots
+                        </Link>
+                    </div>
+                    <div>
+                        <Link
+                            href="/searchBooking"
+                            className="btn btn-secondary btn-lg mt-4 px-5 py-3 fw-semibold text-white"
+                        >
+                            Search bookings by email
                         </Link>
                     </div>
                 </div>
@@ -35,7 +43,7 @@ export default function Home() {
 
                     <div className="row text-center g-4">
                         <div className="col-md-4">
-                            <i className="bi bi-shield-lock-fill fs-1 text-primary" />
+                            <i className="bi bi-shield-lock-fill fs-1 text-primary"/>
                             <h5 className="fw-semibold mt-3">Secure Parking</h5>
                             <p className="text-muted">
                                 24/7 monitored parking with maximum safety.
@@ -43,7 +51,7 @@ export default function Home() {
                         </div>
 
                         <div className="col-md-4">
-                            <i className="bi bi-cash-coin fs-1 text-success" />
+                            <i className="bi bi-cash-coin fs-1 text-success"/>
                             <h5 className="fw-semibold mt-3">Affordable Prices</h5>
                             <p className="text-muted">
                                 Best prices guaranteed, pay only for the time you need.
@@ -51,7 +59,7 @@ export default function Home() {
                         </div>
 
                         <div className="col-md-4">
-                            <i className="bi bi-geo-alt-fill fs-1 text-danger" />
+                            <i className="bi bi-geo-alt-fill fs-1 text-danger"/>
                             <h5 className="fw-semibold mt-3">Close to You</h5>
                             <p className="text-muted">
                                 Parking spots near airports and top city spots.

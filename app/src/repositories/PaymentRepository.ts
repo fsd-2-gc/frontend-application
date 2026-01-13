@@ -7,30 +7,32 @@ export class PaymentRepository {
         return process.env.API_KEY as string;
     }
 
-static async markPaid(bookingId: number) {
-    const url = `${this.BASE_URL}/bookings/${bookingId}/mark-paid/`;
-    console.log("Calling Django:", url);
+    static async markPaid(bookingId: number) {
+        const url = `${this.BASE_URL}/bookings/${bookingId}/mark-paid/`;
+        console.log("Calling Django:", url);
 
-    const res = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "X-API-KEY": this.API_KEY,
-        },
-        body: JSON.stringify({}),
-    });
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+            body: JSON.stringify({
+                booking_id: bookingId
+            }),
+        });
 
-    const json = await res.json();
+        const json = await res.json();
 
-    console.log("Django response:", res.status, json);
+        console.log("Django response:", res.status, json);
 
-    if (!res.ok || json.status !== "ok") {
-        throw new Error(json?.data ?? "Failed to mark booking as paid");
+        if (!res.ok || json.status !== "ok") {
+            throw new Error(json?.data ?? "Failed to mark booking as paid");
+        }
+
+        return json;
     }
-
-    return json;
-}
 
 
     static async refund(bookingId: number) {
@@ -43,7 +45,9 @@ static async markPaid(bookingId: number) {
                     Accept: "application/json",
                     "X-API-KEY": this.API_KEY,
                 },
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    booking_id: bookingId
+                }),
             }
         );
 
