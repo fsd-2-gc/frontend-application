@@ -1,6 +1,7 @@
 "use client"
 
 import React, {useState, useEffect} from "react";
+import {useRouter} from "next/navigation";
 import "../css/createBooking.css";
 
 import {BookingService} from "../services/BookingService";
@@ -13,6 +14,7 @@ type CreateBookingProps = {
 };
 
 export default function CreateBooking({productId, resellerId}: CreateBookingProps) {
+    const router = useRouter();
     const [customerEmail, setCustomerEmail] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -76,11 +78,16 @@ export default function CreateBooking({productId, resellerId}: CreateBookingProp
 
             const newId = await BookingService.submitNewBooking(bookingData);
 
-            setSuccessMsg(`Booking created successfully! ID: ${newId}`);
+            setSuccessMsg(`Booking created successfully! ID: ${newId}. Redirecting...`);
 
             setCustomerEmail("");
             setStartDate("");
             setEndDate("");
+
+            // Redirect to the booking details page
+            setTimeout(() => {
+                router.push(`/booking/${newId}`);
+            }, 1500);
 
         } catch (err: any) {
             setErrorMsg(err.message || "Booking failed.");
