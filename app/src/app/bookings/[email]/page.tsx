@@ -15,7 +15,7 @@ export default async function BookingByEmailPage({ params }: PageProps) {
         return (
             <div className="container my-5 text-center">
                 <h4>No bookings found</h4>
-                <p className="text-muted">{email}</p>
+                <p className="text-muted">{decodedEmail}</p>
             </div>
         );
     }
