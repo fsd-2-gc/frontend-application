@@ -1,4 +1,5 @@
 import type {Booking} from "@/models/Booking";
+import { Status } from "@/models/Booking";
 
 export class BookingRepository {
     private static get BASE_URL() {
@@ -22,6 +23,7 @@ export class BookingRepository {
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 "X-API-KEY": this.API_KEY,
+                "Cache-Control": "no-cache",
             },
         });
 
@@ -69,6 +71,32 @@ export class BookingRepository {
         return Number(json.data.booking_id);
     }
 
+    static async cancelBooking(bookingId: number): Promise<boolean> {
+        if (!Number.isFinite(bookingId) || bookingId <= 0) {
+            return false;
+        }
+
+        const url = `${this.BASE_URL}/cancelbooking/${bookingId}/`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+        });
+
+        const json: unknown = await response.json();
+
+        if (!response.ok) {
+            console.error("Booking annuleren mislukt:", json);
+            return false;
+        }
+
+        return true;
+    }
+
     private static mapBooking(b: any): Booking {
         return {
             id: Number(b.id ?? b.booking_id),
@@ -78,7 +106,7 @@ export class BookingRepository {
             startDate: new Date(b.start_date),
             endDate: new Date(b.end_date),
             totalPrice: Number(b.total_price),
-            status: b.status,
+            status: b.status as Status,
         };
     }
 }

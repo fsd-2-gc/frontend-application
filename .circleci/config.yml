@@ -11,15 +11,21 @@ jobs:
           working_directory: app
           command: npm ci
       - run:
-          name: "Run tests"
+          name: "Run tests with coverage"
           working_directory: app
-          command: npm run test:run
+          command: npm run test:run -- --coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - app/coverage
 
   run-static-code-analysis:
     docker:
       - image: node:20-alpine
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: "Install Sonar scan"
           command: npm install -g @sonar/scan
@@ -29,7 +35,8 @@ jobs:
             sonar \
               -Dsonar.token=$SONAR_DEV_TOKEN \
               -Dsonar.projectKey=$SONAR_DEV_PROJECT_KEY \
-              -Dsonar.organization=$SONAR_DEV_ORGANIZATION
+              -Dsonar.organization=$SONAR_DEV_ORGANIZATION \
+              -Dsonar.javascript.lcov.reportPaths=app/coverage/lcov.info
 
   run-end-to-end-test:
     machine:

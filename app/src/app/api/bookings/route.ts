@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       endDate: new Date(body.endDate),
       totalPrice: Number(body.totalPrice),
       status: body.status,
+      
     };
 
     const newId = await BookingRepository.createBooking(bookingInput);

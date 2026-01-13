@@ -54,3 +54,13 @@
     grid-template-columns: 1fr;
   }
 }
+
+.redbox {
+  border: 2px solid #e53e3e;
+  background-color: #fff5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  display: inline-block;
+}
+
