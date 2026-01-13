@@ -29,7 +29,11 @@ export class BookingRepository {
 
         const json = await response.json();
 
-        console.log("Raw json.data:", json.data);
+        if (!response.ok || !json?.data) {
+            console.error("Booking ophalen mislukt:", json);
+            return null;
+        }
+
         return this.mapBooking(json.data);
     }
 
@@ -67,8 +71,33 @@ export class BookingRepository {
         return Number(json.data.booking_id);
     }
 
+    static async getBookingsByEmail(email: string): Promise<Booking[]> {
+        if (!email) {
+            return [];
+        }
+
+        const url = `${this.BASE_URL}/getbookings/${(email)}/`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-API-KEY": this.API_KEY,
+            },
+        });
+
+        const json = await response.json();
+
+        if (!response.ok || !Array.isArray(json?.data)) {
+            console.error("Bookings ophalen mislukt:", json);
+            return [];
+        }
+
+        return json.data.map(this.mapBooking);
+    }
+
     private static mapBooking(b: any): Booking {
-        console.log("Raw booking data status:", b.status, typeof b.status);
         return {
             id: Number(b.id ?? b.booking_id),
             productId: b.product_id,

@@ -31,4 +31,9 @@ export class BookingService {
         }
         return BookingRepository.createBooking(booking)
     }
+
+    static async getBookingsByEmail(email: string) {
+        return BookingRepository.getBookingsByEmail(email);
+    }
+
 }
