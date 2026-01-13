@@ -1,15 +1,16 @@
 import { BookingService } from "@/services/BookingService";
 import { Booking, Status } from "@/models/Booking";
+import RefundButtonWrapper from "./RefundButtonWrapper";
 import CancelBookingButton from "@/components/CancelBookingButton";
 import "@/css/booking.css";
 
 type PageProps = {
-    params: Promise<{ id: string }>;
+    params: { id: string };
 };
 
 export default async function BookingPage({ params }: PageProps) {
-    const { id } = await params;
-    const bookingId = Number(id);
+    const resolvedParams = await params;
+    const bookingId = Number(resolvedParams.id);
 
     if (!Number.isFinite(bookingId)) {
         return <div className="alert danger">Invalid booking id</div>;
@@ -43,8 +44,8 @@ export default async function BookingPage({ params }: PageProps) {
                     <div className="col">
                         <p><strong>Start Date:</strong> {booking.startDate.toLocaleString()}</p>
                         <p><strong>End Date:</strong> {booking.endDate.toLocaleString()}</p>
-                        <p><strong>Total Price:</strong> ${booking.totalPrice.toFixed(2)}</p>
-                        <p><strong>Status:</strong> {Status[booking.status]}</p>
+                        <p><strong>Total Price:</strong> €{booking.totalPrice.toFixed(2)}</p>
+                        <p><strong>Status:</strong> {booking.status === Status.Paid ? 'Paid' : 'Not Paid'}</p>
                     </div>
                 </div>
 
@@ -57,6 +58,18 @@ export default async function BookingPage({ params }: PageProps) {
                 {booking.status === Status.Cancelled && (
                     <div className="alert info">This booking has been cancelled.</div>
                 )}
+
+                <div className="actions">
+                    {booking.status !== Status.Paid && (
+                        <a className="btn btn-primary" href={`/payment?bookingId=${booking.id}`}>
+                            Pay booking
+                        </a>
+                    )}
+
+                    {booking.status === Status.Paid && (
+                        <RefundButtonWrapper bookingId={booking.id} />
+                    )}
+                </div>
             </div>
         </div>
     );
